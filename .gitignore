@@ -1,0 +1,58 @@
+# Бинарники
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Сборка
+/bin/
+/build/
+/dist/
+
+# Тесты
+*.test
+*.out
+coverage.out
+
+# Go workspace
+go.work
+go.work.sum
+
+# Конфиги
+config/local.yaml
+config/dev.yaml
+config/*.local.yaml
+
+# ENV файлы
+.env
+.env.*
+!.env.example
+
+# Секреты
+secrets/
+*.key
+*.pem
+*.crt
+
+# Logs
+*.log
+logs/
+tmp/
+
+# Docker
+docker-compose.override.yml
+
+# Docker runtime
+.docker/
+**/.docker/
+
+# VS Code
+.vscode/
+!.vscode/extensions.json
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
