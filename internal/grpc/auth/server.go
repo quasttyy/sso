@@ -25,7 +25,7 @@ type Auth interface {
 		email string,
 		password string,
 	) (int, error)
-	IsAdmin(ctx context.Context, user_id int) (bool error)
+	IsAdmin(ctx context.Context, user_id int64) (bool, error)
 }
 
 // serverAPI будет реализовывать интерфейс AuthService
@@ -64,14 +64,39 @@ func (s *serverAPI) Register(
 	ctx context.Context,
 	req *ssov1.RegisterRequest,
 ) (*ssov1.RegisterResponse, error) {
-	panic("implement me!")
+	// Валидация
+	if err := validateRegister(req); err != nil {
+		return nil, err
+	}
+
+	userID, err := s.auth.Register(ctx, req.GetEmail(), req.GetPassword())
+	if err != nil {
+		// todo: error handling
+		return nil, status.Error(codes.Internal, "internal error")
+	}
+
+	return &ssov1.RegisterResponse{
+		UserId: int64(userID),
+	}, nil
 }
 
 func (s *serverAPI) IsAdmin(
 	ctx context.Context,
 	req *ssov1.IsAdminRequest,
 ) (*ssov1.IsAdminResponse, error) {
-	panic("implement me!")
+	if err := validateIsAdmin(req); err != nil {
+		return nil, err
+	}
+
+	isAdmin, err := s.auth.IsAdmin(ctx, req.GetUserId())
+	if err != nil {
+		// todo: error handling
+		return nil, status.Error(codes.Internal, "internal error")
+	}
+
+	return &ssov1.IsAdminResponse{
+		IsAdmin: isAdmin,
+	}, nil
 }
 
 func validateLogin(req *ssov1.LoginRequest) error {
@@ -86,4 +111,21 @@ func validateLogin(req *ssov1.LoginRequest) error {
 	}
 
 	return nil
+}
+
+func validateRegister(req *ssov1.RegisterRequest) error {
+	if req.GetEmail() == "" {
+		return status.Error(codes.InvalidArgument, "mail is required")
+	}
+	if req.GetPassword() == "" {
+		return status.Error(codes.InvalidArgument, "password is required")
+	}
+
+	return nil
+}
+
+func validateIsAdmin(req *ssov1.IsAdminRequest) error {
+	if req.GetUserId() == emptyValue {
+		return status.Error(codes.InvalidArgument, "user_id is required") 
+	}
 }
