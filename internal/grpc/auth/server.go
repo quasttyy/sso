@@ -2,18 +2,19 @@ package auth
 
 import (
 	"context"
-
 	ssov1 "github.com/quasttyy/protos/gen/go/sso"
 	"google.golang.org/grpc"
 )
 
+// serverAPI будет реализовывать интерфейс AuthService
 type serverAPI struct {
 	ssov1.UnimplementedAuthServer
 }
 
+// Register связывает RPC методы с методами структуры serverAPI
 func Register(gRPC *grpc.Server) {
 	ssov1.RegisterAuthServer(gRPC, &serverAPI{})
-}
+} 
 
 func (s *serverAPI) Login(
 	ctx context.Context,

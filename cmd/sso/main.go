@@ -4,8 +4,10 @@ import (
 	"fmt"
 	"log/slog"
 	"os"
+	"os/signal"
 	"sso/internal/app"
 	"sso/internal/config"
+	"syscall"
 )
 
 const (
@@ -24,10 +26,19 @@ func main() {
 
 	application := app.New(logger, cfg.GRPC.Port, cfg.Dsn, cfg.TokenTTL)
 
-	application.GRPCServer.MustRun()
+	go application.GRPCServer.MustRun()
 	// todo: инициализировать приложение (app)
-
 	// todo: запустить gRPC сервер приложения
+
+	// Graceful shutdown
+	stop := make(chan os.Signal, 1)
+	signal.Notify(stop, syscall.SIGTERM, syscall.SIGINT)
+
+	gotSignal := <- stop
+	logger.Info("stopping application...", slog.Any("signal:", gotSignal))
+
+	application.GRPCServer.Stop()
+	logger.Info("application is stopped")
 }
 
 func setUpLogger(env string) *slog.Logger {
