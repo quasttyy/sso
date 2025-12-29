@@ -2,22 +2,22 @@ package jwt
 
 import (
 	"fmt"
-	"github.com/golang-jwt/jwt/v5"
 	"sso/internal/domain/models"
 	"testing"
 	"time"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 func TestNewToken(t *testing.T) {
 	// Создаём тестовые данные
 	user1 := models.User{
-		ID:       1,
-		Email:    "1@mail.ru",
+		ID: 1,
+		Email: "1@mail.ru",
 		PassHash: []byte("passHash1"),
 	}
 	app1 := models.App{
 		App_id: 1,
-		Name:   "phone",
+		Name: "phone",
 		Secret: "",
 	}
 	dur1 := time.Second * 30
@@ -25,8 +25,8 @@ func TestNewToken(t *testing.T) {
 	// Прописываем ожидаемый результат
 	expectedRes := jwt.MapClaims{
 		"userID": float64(user1.ID),
-		"email":  user1.Email,
-		"appID":  float64(app1.App_id),
+		"email": user1.Email,
+		"appID": float64(app1.App_id),
 	}
 
 	// Вызываем метод с тестовыми данными
@@ -37,10 +37,10 @@ func TestNewToken(t *testing.T) {
 
 	// Парсим полученный токен
 	parsed1, err := jwt.Parse(token1, func(token *jwt.Token) (interface{}, error) {
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("unexpected signing method: %T", token.Method)
-		}
-		return []byte(app1.Secret), nil
+    if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+        return nil, fmt.Errorf("unexpected signing method: %T", token.Method)
+    }
+    	return []byte(app1.Secret), nil
 	})
 
 	// Получаем claims с спаршенного токена
