@@ -1,0 +1,13 @@
+CREATE TABLE IF NOT EXISTS users (
+    id BIGSERIAL PRIMARY KEY,
+    email TEXT NOT NULL UNIQUE,
+    pass_hash BYTEA NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_email ON users(email);
+
+CREATE TABLE IF NOT EXISTS apps (
+    id BIGSERIAL PRIMARY KEY,
+    app_name TEXT NOT NULL UNIQUE,
+    app_secret TEXT NOT NULL UNIQUE
+);
