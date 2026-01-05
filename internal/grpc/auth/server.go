@@ -128,4 +128,6 @@ func validateIsAdmin(req *ssov1.IsAdminRequest) error {
 	if req.GetUserId() == emptyValue {
 		return status.Error(codes.InvalidArgument, "user_id is required") 
 	}
+
+	return nil
 }

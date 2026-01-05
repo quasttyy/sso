@@ -10,14 +10,22 @@ import (
 
 type Config struct {
 	Env string `yaml:"env" env-default:"local"`
-	Dsn string `yaml:"dsn" env-required:"true"`
 	TokenTTL time.Duration `yaml:"token_ttl" env-required:"true"` 
 	GRPC GRPCConfig `yaml:"grpc"`
+	Postgres PostgresConfig `yaml:"postgres"`
 }
 
 type GRPCConfig struct {
 	Port int `yaml:"port"`
 	Timeout time.Duration `yaml:"timeout"`
+}
+
+type PostgresConfig struct {
+	DSN             string `yaml:"dsn"`
+	MaxConns        int32 `yaml:"max_conns"`
+	MinConns        int32 `yaml:"min_conns"`
+	MaxConnLifeTime time.Duration `yaml:"max_conn_lifetime"`
+	MaxConnIdleTime time.Duration `yaml:"max_conn_idletime"`
 }
 
 func MustLoad() *Config {
