@@ -39,7 +39,7 @@ type UserProvider interface {
 }
 
 type AppProvider interface {
-	App(ctx context.Context, appID int) (models.App, error)
+	App(ctx context.Context, appID int64) (models.App, error)
 }
 
 // New возвращает новый инстанс AuthService
@@ -63,7 +63,7 @@ func (a *AuthService) Login(
 	ctx context.Context,
 	email string,
 	password string,
-	appID int,
+	appID int64,
 ) (string, error) {
 	const op = "Auth.Login"
 
